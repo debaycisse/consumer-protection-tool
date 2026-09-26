@@ -1,2 +1,5 @@
 [tool.black]
 line-length = 72
+extend-exclude = '''
+manage.py | migrations/ | settings.py
+'''
