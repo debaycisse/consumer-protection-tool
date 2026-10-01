@@ -1,3 +1,4 @@
 [flake8]
 max-line-length = 72
-extend-ignore = E203
+extend-ignore = E203,F401
+exclude = migrations, manage.py, settings.py
