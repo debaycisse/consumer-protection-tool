@@ -36,4 +36,9 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["url", "created_at", "updated_at"]
+        read_only_fields = [
+            "url",
+            "commenter_id",
+            "created_at",
+            "updated_at",
+        ]

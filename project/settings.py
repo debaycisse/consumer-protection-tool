@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "apps.consumer_protection",
 ]
 
@@ -130,3 +131,7 @@ MAILERS = {
 }
 
 AUTH_USER_MODEL = "consumer_protection.Users"
+
+REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "apps.consumer_protection.resource_exception.general_exception"
+}
