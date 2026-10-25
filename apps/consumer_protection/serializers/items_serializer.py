@@ -22,7 +22,6 @@ class ItemsSerializer(serializers.HyperlinkedModelSerializer):
             "item_id",
             "name",
             "producer_id",
-            "leaderboard_score",
             "category",
             "url",
             "created_at",
@@ -31,6 +30,8 @@ class ItemsSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = [
             "item_id",
             "url",
+            "producer_id",
+            "leaderboard_score",
             "created_at",
             "updated_at",
             "leaderboard_score",

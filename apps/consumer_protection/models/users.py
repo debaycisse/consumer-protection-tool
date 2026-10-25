@@ -3,39 +3,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from uuid import uuid4
 
-# class ConsumersManager(BaseUserManager):
-#     def create_user(self, **all_fields):
-#         if not all_fields.get('email'):
-#             raise ValidationError('email address cannot be blank')
-#         if not all_fields.get('username'):
-#             raise ValidationError("username cannot be blank")
-#         if not all_fields.get('name'):
-#             raise ValidationError('name cannot be blank')
-#         if not all_fields.get('password'):
-#             raise ValidationError('password cannot be blank')
-
-#         email = self.normalize_email(all_fields.pop('email'))
-#         password = all_fields.pop('password')
-#         consumer = self.model(email=email, **all_fields)
-#         consumer.set_password(password)
-#         consumer.save(using=self._db)
-#         return consumer
-
-
-# class Consumers(AbstractBaseUser):
-#     """
-#     represents an instance of an end-user or consumer
-#     """
-#     consumer_id = models.UUIDField(
-#         default=uuid4, primary_key=True, editable=False)
-#     name = models.CharField(max_length=100, blank=False, null=False)
-#     email = models.EmailField(unique=True, blank=False, null=False)
-#     username = models.CharField(unique=True, blank=False, null=False)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     objects = ConsumersManager()
-
 USER_TYPE = {"CONS": "consumer", "PROD": "producer"}
 
 
