@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticatedOrReadOnly,
+    IsAuthenticated,
 )
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
@@ -46,8 +47,12 @@ class SignInView(CommonViewAttributes, APIView):
 
 
 class SignOutView(CommonViewAttributes, APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, format=None):
         user_token = request.auth
+
+        self.check_object_permissions(request, user_token)
 
         user_token.delete()
 
@@ -69,9 +74,58 @@ class RegistrationView(CommonViewAttributes, APIView):
 
 
 class ListUsersView(CommonViewAttributes, APIView):
-    pass
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, format=None):
+        user_objects = Users.objects.all()
+
+        self.check_object_permissions(request, user_objects)
+
+        users_serializer = UserSerializer(user_objects, many=True)
+
+        response_data = {"data": users_serializer.data}
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class RetrieveUpdateUserView(CommonViewAttributes, APIView):
     permission_classes = [IsAuthenticatedOrReadOnly, IsAccountOwner]
-    pass
+
+    def get_object(self, user_id=None):
+        return Users.objects.get(user_id=user_id)
+
+    def get(self, request, user_id=None, format=None):
+        user_object = self.get_object(user_id)
+
+        self.check_object_permissions(request, user_object)
+
+        user_serializer = UserSerializer(user_object)
+
+        response_data = {"data": user_serializer.data}
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    def patch(self, request, user_id=None, format=None):
+        user_object = self.get_object(user_id)
+
+        self.check_object_permissions(request, user_object)
+
+        request_data = request.data
+
+        user_serializer = UserSerializer(
+            user_object, data=request_data, partial=True
+        )
+        user_serializer.is_valid(raise_exception=True)
+
+        response_data = {"data": user_serializer.data}
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    def delete(self, request, user_id=None, format=None):
+        user_object = self.get_object(user_id)
+
+        self.check_object_permissions(request, user_object)
+
+        user_object.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -24,7 +24,8 @@ class FeedbacksSerializer(serializers.HyperlinkedModelSerializer):
     identified and the supplied item or product id is validated
     """
     item_id = serializers.HyperlinkedRelatedField(
-        view_name="item-detail", queryset=Items.objects.all()
+        view_name="item-detail",
+        queryset=Items.objects.select_related("producer_id"),
     )
 
     url = serializers.HyperlinkedIdentityField(
@@ -69,8 +70,8 @@ class FeedbackResponseSerializer(
     """
     feedback_id = serializers.HyperlinkedRelatedField(
         view_name="feedback-detail",
-        queryset=Feedbacks.objects.filter(
-            item_id__producer_id=responder_id
+        queryset=Feedbacks.objects.select_related(
+            "consumer_id", "item_id"
         ),
     )
 
@@ -96,12 +97,41 @@ class FeedbackResponseSerializer(
             "updated_at",
         ]
 
+    def validate_feedback_id(self, value):
+        """
+        to ensure only producer can respond to
+        feedback on their products
+
+        """
+        responder_url = self.initial_data.get("responder_id")
+        responder_id = responder_url.split("/")[-1]
+
+        # to confirm the existence of the responder
+        responder_object = (
+            Users.objects.filter(user_type="producer")
+            .filter(user_id=responder_id)
+            .first()
+        )
+
+        if not responder_object:
+            raise serializers.ValidationError("Invalid responder")
+
+        if value.item_id.producer_id != responder_id:
+            raise serializers.ValidationError(
+                "The feedback does not belong to the responder"
+            )
+
+        return value
+
 
 class FeedbackVerificationSerializer(
     serializers.HyperlinkedModelSerializer
 ):
     feedback_id = serializers.HyperlinkedRelatedField(
-        view_name="feedback-detail", queryset=Feedbacks.objects.all()
+        view_name="feedback-detail",
+        queryset=Feedbacks.objects.select_related(
+            "consumer_id", "item_id"
+        ),
     )
     url = serializers.HyperlinkedIdentityField(
         view_name="feedback-verification-detail"
