@@ -10,10 +10,6 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = (
     "django-insecure-5h*zi(uks!2vk&lm$5n0fj6e7zztt^0w-1njr8t!xf2pa)m*0v"
 )
@@ -115,14 +111,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.1/howto/static-files/
-
 STATIC_URL = "static/"
-
-
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
 MAILERS = {
     "default": {
@@ -135,3 +124,6 @@ AUTH_USER_MODEL = "consumer_protection.Users"
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "apps.consumer_protection.resource_exception.general_exception"
 }
+
+# To prevents Django from automatically appending slashes to URLs
+APPEND_SLASH = False
